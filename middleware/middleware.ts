@@ -1,9 +1,10 @@
 import "dotenv/config";
+import type { NextFunction, Response } from "express";
 import jwt, { type JwtPayload } from "jsonwebtoken";
-import type { NextFunction, Request, Response } from "express";
+import type { CustomExpressRequest } from "../types/types";
 
 function tokenVerification(
-  req: Request,
+  req: CustomExpressRequest,
   res: Response,
   next: NextFunction,
 ): void {

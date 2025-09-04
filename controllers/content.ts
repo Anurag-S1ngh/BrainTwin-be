@@ -1,9 +1,13 @@
-import type { Request, Response } from "express";
+import type { Response } from "express";
 import { ContentModel, UserModel } from "../mongodb/db";
+import type { CustomExpressRequest } from "../types/types";
 import { upsertRecordsAndLogStats } from "../vector-db/vector-db";
 import { contentSchema } from "../zod-schema/content";
 
-export const fetchAllContent = async (req: Request, res: Response) => {
+export const fetchAllContent = async (
+  req: CustomExpressRequest,
+  res: Response,
+) => {
   const userId = req.userId;
   if (!userId) {
     res.json({
@@ -27,7 +31,10 @@ export const fetchAllContent = async (req: Request, res: Response) => {
   }
 };
 
-export const createContent = async (req: Request, res: Response) => {
+export const createContent = async (
+  req: CustomExpressRequest,
+  res: Response,
+) => {
   const userId = req.userId;
   if (!userId) {
     res.json({
@@ -78,7 +85,10 @@ export const createContent = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteContent = async (req: Request, res: Response) => {
+export const deleteContent = async (
+  req: CustomExpressRequest,
+  res: Response,
+) => {
   const contentId = req.params.contentId;
   if (!contentId) {
     console.log("invalid contentId");

@@ -24,7 +24,4 @@ export async function vectorDBQuery(query: string, userId: string) {
   const filteredHits = hits.filter((hit: any) => hit.fields.userId === userId);
 
   return filteredHits;
-  // results.result.hits.forEach((hit: any) => {
-  //   console.log(hit);
-  // });
 }

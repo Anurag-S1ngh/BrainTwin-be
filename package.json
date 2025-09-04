@@ -6,15 +6,14 @@
   "scripts": {
     "dev": "bun index.ts"
   },
-  "devDependencies": {
-    "@types/bun": "latest",
-    "@types/express": "^5.0.3",
-    "@types/jsonwebtoken": "^9.0.10"
-  },
+  "devDependencies": {},
   "peerDependencies": {
     "typescript": "^5"
   },
   "dependencies": {
+    "@types/bun": "latest",
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
     "@google/genai": "^1.7.0",
     "@pinecone-database/pinecone": "^6.1.1",
     "@types/cors": "^2.8.19",

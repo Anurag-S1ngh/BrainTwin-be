@@ -1,9 +1,10 @@
-import type { Request, Response } from "express";
+import type { Response } from "express";
 import { AIResponse } from "../ai/ai";
+import type { CustomExpressRequest } from "../types/types";
 import { vectorDBQuery } from "../vector-db/query";
 import { aiQuerySchema } from "../zod-schema/ai";
 
-export const aiQuery = async (req: Request, res: Response) => {
+export const aiQuery = async (req: CustomExpressRequest, res: Response) => {
   const userId = req.userId;
   if (!userId) {
     res.json({

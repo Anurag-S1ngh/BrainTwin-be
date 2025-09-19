@@ -3,22 +3,21 @@ import { ContentModel, UserModel } from "../mongodb/db";
 import type { CustomExpressRequest } from "../types/types";
 import { upsertRecordsAndLogStats } from "../vector-db/vector-db";
 import { contentSchema } from "../zod-schema/content";
+import { deleteContent, fetchContent } from "../sevices/content.service";
 
 export const fetchAllContent = async (
   req: CustomExpressRequest,
   res: Response,
 ) => {
-  const userId = req.userId;
-  if (!userId) {
+  const userID = req.userId;
+  if (!userID) {
     res.json({
       msg: "sign in first",
     });
     return;
   }
   try {
-    const contents = await ContentModel.find({ userId: req.userId }).sort({
-      _id: -1,
-    });
+    const contents = await fetchContent(userID);
     res.json({
       msg: "all content fetched",
       contents,
@@ -35,8 +34,8 @@ export const createContent = async (
   req: CustomExpressRequest,
   res: Response,
 ) => {
-  const userId = req.userId;
-  if (!userId) {
+  const userID = req.userId;
+  if (!userID) {
     res.json({
       msg: "sign in first",
     });
@@ -70,7 +69,7 @@ export const createContent = async (
         id: content._id.toString(),
         chunk_text: `${title} ${description} ${url}`, // required for auto-embedding
         category: type,
-        userId,
+        userId: userID,
       },
     ]);
     res.json({
@@ -85,7 +84,7 @@ export const createContent = async (
   }
 };
 
-export const deleteContent = async (
+export const deleteContentRoute = async (
   req: CustomExpressRequest,
   res: Response,
 ) => {
@@ -94,18 +93,15 @@ export const deleteContent = async (
     console.log("invalid contentId");
     return;
   }
-  const userId = req.userId;
-  if (!userId) {
+  const userID = req.userId;
+  if (!userID) {
     res.json({
       msg: "sign in first",
     });
     return;
   }
   try {
-    await ContentModel.findOneAndDelete({
-      _id: contentId,
-      userId,
-    });
+    await deleteContent(contentId, userID);
     await UserModel.findByIdAndUpdate(req.userId, {
       $pull: { contents: contentId },
     });

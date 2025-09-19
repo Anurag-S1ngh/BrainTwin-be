@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import type { Request, Response } from "express";
-import { UserModel } from "../mongodb/db";
+import { createUser, findUserByEmail } from "../sevices/auth.service";
+import { signJWT } from "../util/jwt";
 import { AuthSchema } from "../zod-schema/auth";
 
 export const signup = async (req: Request, res: Response) => {
@@ -20,10 +20,7 @@ export const signup = async (req: Request, res: Response) => {
   const hashPassword = await bcrypt.hash(password, 10);
 
   try {
-    await UserModel.create({
-      email,
-      password: hashPassword,
-    });
+    createUser(email, hashPassword);
     res.status(200).json({
       msg: "sign up successful",
     });
@@ -67,9 +64,7 @@ export const signin = async (req: Request, res: Response) => {
 
   const { email, password } = isValidData.data;
   try {
-    const user = await UserModel.findOne({
-      email,
-    });
+    const user = await findUserByEmail(email);
     if (!user) {
       res.status(401).json({
         msg: "sign up first",
@@ -86,10 +81,7 @@ export const signin = async (req: Request, res: Response) => {
       return;
     }
 
-    const token = jwt.sign(
-      { userId: user._id },
-      process.env.JWT_SECRET as string,
-    );
+    const token = signJWT(user._id);
 
     res.json({
       msg: "sign in successful",
